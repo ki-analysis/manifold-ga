@@ -17,3 +17,5 @@ For example, for the trained model "180403d_8145", we have
 (2) one file named "squeezed_reconstructed_data.mat".
 (3a) twenty-two "training_info_nS1713_nN300_sigma*_nEigs100.mat" files, one for each length-scale of interest (\sigma).
 (3b) twenty-two "c_coeff_info_nS1713_nN300_sigma*_nEigs100.mat" files, one for each length-scale of interest (\sigma).
+
+Download trained model(s) at https://www.synapse.org/#!Synapse:syn20081375/files/
