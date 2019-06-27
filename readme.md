@@ -62,7 +62,7 @@ specified.</li>
   <pre>>> T=[22.24 4.34 23.06; 29.21 5.53 28.70]; dt=35; manifold_GA_2_visits</pre>
   Here AC, FL, and HC for the first visit, and AC, FL, and HC for the second visit, in this order, are specified in cm in 
   the MATLAB&reg; variable <b>T</b>. Note the use of semi-colon, making <b>T</b> a 2 x 3 matrix. The time elapsed between
-  the two visits are specified in days in the MATLAB&reg; variable <b>dt</b>.
+  the two visits is specified in days in the MATLAB&reg; variable <b>dt</b>.
 <li>A different trained model can be used, with or without a GUI:
   <pre>>> system_of_interest='180403i_9565'; manifold_GA_2_visits</pre>
   <pre>>> system_of_interest='180402h_1732'; T=[22.24 4.34 23.06; 29.21 5.53 28.70]; dt=35; manifold_GA_2_visits</pre>
@@ -71,4 +71,6 @@ specified.</li>
   eigenfunctions, and interval matched to within 1 day of the best match) is shown, and a text message will appear in 
   the MATLAB&reg; window.
 <li>The histogram bar corresponding to the prediction with the best interval match is highlighted.</li>
+<li>In both the one-visit and the two-visit cases, the predicted GA is returned in the MATLAB&reg; variable
+  <b>predicted_GA</b>.</li>
 </ol>
