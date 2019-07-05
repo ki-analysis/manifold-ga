@@ -13,11 +13,12 @@ Copyright (c) 2019 Russell Fung & Abbas Ourmazd. All Rights Reserved.
   <li><b>manifold_GA.m</b></li>
   <li><b>manifold_GA_2_visits.m</b></li>
   <li><b>histcounts.m</b> (for GNU Octave users)</li>
+  <li><b>fix_synapse_filename_bug.m</b></li>
   </ol>
 <li>Inside the <b>manifold-ga</b> directory, create a subdirectory named <b>trained_model</b>.</li>
 <li>Inside the <b>trained_model</b> directory, MATLAB&reg; mat-files for each trained model must be placed together in an
 appropriately named subdirectory. These mat-files can be downloaded 
-<a href="https://www.synapse.org/#!Synapse:syn20081375/files/">here</a>.</li>
+<a href="https://www.synapse.org/#!Synapse:syn20081375/files/">here</a>. These models have been trained using different subsets of the InterGrowth-21 data.</li>
 <li>The trained model <b>180403d_8145</b> is used by default, and must be present if no other trained model is explicitly
 specified.</li>
 <li>Each trained model consists of
@@ -44,6 +45,9 @@ specified.</li>
 
 <h2>running manifold-GA</h2>
 <ol type="1">
+<li>It has been noted that Synapse inserts '(*)' into some of the model filenames. This can be fixed by running
+  <pre>>> fix_synapse_filename_bug</pre>
+  Note that this has to be done each time new model files are downloaded from Synapse.
 <li>One prenatal visit, with a GUI:
   <pre>>> manifold_GA</pre>
 <li>One prenatal visit, without a GUI:
