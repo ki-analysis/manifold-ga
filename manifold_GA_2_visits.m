@@ -95,11 +95,11 @@
   hsp = subplot(1,1,1);
   my_xlabel = 'GA Predicted For Visit# 2 (Days)';
   my_ylabel = 'Number Of Times';
-  my_title = ['GA Prediction Histogram ($|\epsilon|_{min} = $ ' num2str(min_err,'%.4f') ')'];
+  my_title = ['GA Prediction Histogram (|\epsilon|_{min}=' num2str(min_err,'%.4f') ')'];
   param = [];
   param.bar_text_fontSize = 1;
   plotRF_integer_bar_chart(hsp,visit_pair_readout_candidate,my_xlabel,my_ylabel,my_title,param)
-  hTitle = get(hsp,'title'); set(hTitle,'Interpreter','latex')
+  hTitle = get(hsp,'title'); set(hTitle,'Interpreter','tex')
   
   [n,edges] = histcounts(visit_pair_readout_candidate,'binMethod','integers');
   x = 0.5*(edges(1:end-1)+edges(2:end));
@@ -112,23 +112,13 @@
   x_at_min_err = round(GA_at_visit_2(find(err==min_err)));
   x_at_min_err = x_at_min_err(1);
   
-  %%%%%%%%%%
-  % break up the bar chart into individual bar objects
+  try, warning('off','Octave:abbreviated-property-match'), catch, end
   hChild = get(hsp,'child');
   hBar = hChild(end);
   XData = get(hBar,'XData');
-  YData = get(hBar,'YData');
-  FaceColor = get(hBar,'FaceColor');
   numBar = numel(XData);
-  set(hBar,'XData',XData(1),'YData',YData(1))
   hold on
-  for jBar=2:numBar
-    bar(XData(jBar),YData(jBar),'FaceColor',FaceColor)
-  end
-  hold off
-  %%%%%%%%%%
-  hold on
-  bar(x_at_min_err,n(x==x_at_min_err),'r')
+  bar(x_at_min_err+[0 1],[n(x==x_at_min_err) nan],'r')
   hold off
   my_xTick = unique([min_x x_at_min_err max_x]);
   if (numBar>5)

@@ -103,7 +103,7 @@
     predicted_GA = nan;
   else
     hold on
-    bar(x_at_max_n,max_n,'r')
+    bar(x_at_max_n+[0 1],[max_n nan],'r')
     hold off
     my_xTick = [min_x x_at_max_n max_x];
     if (x_at_max_n-min_x<3), my_xTick = setxor(my_xTick,min_x); end
