@@ -5,6 +5,7 @@
   
   path_to_trained_model = './trained_model/';
   
+  if ~exist('batch_mode','var'),            batch_mode = false;                  end
   if ~exist('system_of_interest','var'),    system_of_interest = '180403d_8145'; end
   if ~exist('peak_height_threshold','var'), peak_height_threshold = 30;          end
   
@@ -82,40 +83,54 @@
   end % j_sigma
   
   single_visit_readout_candidate = reshape(fit_table(:,:,1),[],1);
-  h = figure;
-  hsp = subplot(1,1,1);
-  my_xlabel = 'GA Predicted (Days)';
-  my_ylabel = 'Number Of Times';
-  my_title = 'GA Prediction Histogram';
-  param = [];
-  param.bar_text_fontSize = 1;
-  plotRF_integer_bar_chart(hsp,single_visit_readout_candidate,my_xlabel,my_ylabel,my_title,param)
   
-  [n,edges] = histcounts(single_visit_readout_candidate,'binMethod','integers');
-  x = 0.5*(edges(1:end-1)+edges(2:end));
-  
-  [max_n,ind] = max(n);
-  min_x = min(x);
-  max_x = max(x);
-  x_at_max_n = x(ind);
-  if ~(max_n>peak_height_threshold)
-    my_xTick = [min_x max_x];
-    predicted_GA = nan;
+  if (batch_mode)
+    [n,edges] = histcounts(single_visit_readout_candidate,'binMethod','integers');
+    x = 0.5*(edges(1:end-1)+edges(2:end));
+    
+    [max_n,ind] = max(n);
+    x_at_max_n = x(ind);
+    if ~(max_n>peak_height_threshold)
+      predicted_GA = nan;
+    else
+      predicted_GA = x_at_max_n;
+    end
   else
-    hold on
-    bar(x_at_max_n+[0 1],[max_n nan],'r')
-    hold off
-    my_xTick = [min_x x_at_max_n max_x];
-    if (x_at_max_n-min_x<3), my_xTick = setxor(my_xTick,min_x); end
-    if (max_x-x_at_max_n<3), my_xTick = setxor(my_xTick,max_x); end
-    my_xTick = unique([my_xTick,x_at_max_n]);
-    predicted_GA = x_at_max_n;
+    h = figure;
+    hsp = subplot(1,1,1);
+    my_xlabel = 'GA Predicted (Days)';
+    my_ylabel = 'Number Of Times';
+    my_title = 'GA Prediction Histogram';
+    param = [];
+    param.bar_text_fontSize = 1;
+    plotRF_integer_bar_chart(hsp,single_visit_readout_candidate,my_xlabel,my_ylabel,my_title,param)
+    
+    [n,edges] = histcounts(single_visit_readout_candidate,'binMethod','integers');
+    x = 0.5*(edges(1:end-1)+edges(2:end));
+    
+    [max_n,ind] = max(n);
+    min_x = min(x);
+    max_x = max(x);
+    x_at_max_n = x(ind);
+    if ~(max_n>peak_height_threshold)
+      my_xTick = [min_x max_x];
+      predicted_GA = nan;
+    else
+      hold on
+      bar(x_at_max_n+[0 1],[max_n nan],'r')
+      hold off
+      my_xTick = [min_x x_at_max_n max_x];
+      if (x_at_max_n-min_x<3), my_xTick = setxor(my_xTick,min_x); end
+      if (max_x-x_at_max_n<3), my_xTick = setxor(my_xTick,max_x); end
+      my_xTick = unique([my_xTick,x_at_max_n]);
+      predicted_GA = x_at_max_n;
+    end
+    set(hsp,'xTick',my_xTick)
+    if isnan(predicted_GA)
+      mesg = 'An estimate with accuracy better than the typical LMP-based estimates requires additional data.';
+    else
+      mesg = ['Fetal GA estimated to be ' num2str(predicted_GA) ' days.'];
+    end
+    disp(mesg)
   end
-  set(hsp,'xTick',my_xTick)
-  if isnan(predicted_GA)
-    mesg = 'An estimate with accuracy better than the typical LMP-based estimates requires additional data.';
-  else
-    mesg = ['Fetal GA estimated to be ' num2str(predicted_GA) ' days.'];
-  end
-  disp(mesg)
 % end manifold_GA
