@@ -5,6 +5,7 @@
   
   path_to_trained_model = './trained_model/';
   
+  if ~exist('batch_mode','var'),            batch_mode = false;                  end
   if ~exist('system_of_interest','var'),    system_of_interest = '180403d_8145'; end
   
   eta_list = [32,16,8,4,2,1.5,1.43,1.25,1.11];
@@ -91,43 +92,49 @@
   min_err = min(err(:));
   visit_pair_readout_candidate = GA_at_visit_2(find(err-min_err<1));
   
-  h = figure;
-  hsp = subplot(1,1,1);
-  my_xlabel = 'GA Predicted For Visit# 2 (Days)';
-  my_ylabel = 'Number Of Times';
-  my_title = ['GA Prediction Histogram (|\epsilon|_{min}=' num2str(min_err,'%.4f') ')'];
-  param = [];
-  param.bar_text_fontSize = 1;
-  plotRF_integer_bar_chart(hsp,visit_pair_readout_candidate,my_xlabel,my_ylabel,my_title,param)
-  hTitle = get(hsp,'title'); set(hTitle,'Interpreter','tex')
-  
-  [n,edges] = histcounts(visit_pair_readout_candidate,'binMethod','integers');
-  x = 0.5*(edges(1:end-1)+edges(2:end));
-  
-  [max_n,ind] = max(n);
-  min_x = min(x);
-  max_x = max(x);
-  x_at_max_n = x(ind);
-  
-  x_at_min_err = round(GA_at_visit_2(find(err==min_err)));
-  x_at_min_err = x_at_min_err(1);
-  
-  try, warning('off','Octave:abbreviated-property-match'), catch, end
-  hChild = get(hsp,'child');
-  hBar = hChild(end);
-  XData = get(hBar,'XData');
-  numBar = numel(XData);
-  hold on
-  bar(x_at_min_err+[0 1],[n(x==x_at_min_err) nan],'r')
-  hold off
-  my_xTick = unique([min_x x_at_min_err max_x]);
-  if (numBar>5)
-    if (x_at_min_err-min_x<3), my_xTick = setxor(my_xTick,min_x); end
-    if (max_x-x_at_min_err<3), my_xTick = setxor(my_xTick,max_x); end
-    my_xTick = unique([my_xTick,x_at_min_err]);
+  if (batch_mode)
+    x_at_min_err = round(GA_at_visit_2(find(err==min_err)));
+    x_at_min_err = x_at_min_err(1);
+    predicted_GA = x_at_min_err;
+  else
+    h = figure;
+    hsp = subplot(1,1,1);
+    my_xlabel = 'GA Predicted For Visit# 2 (Days)';
+    my_ylabel = 'Number Of Times';
+    my_title = ['GA Prediction Histogram (|\epsilon|_{min}=' num2str(min_err,'%.4f') ')'];
+    param = [];
+    param.bar_text_fontSize = 1;
+    plotRF_integer_bar_chart(hsp,visit_pair_readout_candidate,my_xlabel,my_ylabel,my_title,param)
+    hTitle = get(hsp,'title'); set(hTitle,'Interpreter','tex')
+    
+    [n,edges] = histcounts(visit_pair_readout_candidate,'binMethod','integers');
+    x = 0.5*(edges(1:end-1)+edges(2:end));
+    
+    [max_n,ind] = max(n);
+    min_x = min(x);
+    max_x = max(x);
+    x_at_max_n = x(ind);
+    
+    x_at_min_err = round(GA_at_visit_2(find(err==min_err)));
+    x_at_min_err = x_at_min_err(1);
+    
+    try, warning('off','Octave:abbreviated-property-match'), catch, end
+    hChild = get(hsp,'child');
+    hBar = hChild(end);
+    XData = get(hBar,'XData');
+    numBar = numel(XData);
+    hold on
+    bar(x_at_min_err+[0 1],[n(x==x_at_min_err) nan],'r')
+    hold off
+    my_xTick = unique([min_x x_at_min_err max_x]);
+    if (numBar>5)
+      if (x_at_min_err-min_x<3), my_xTick = setxor(my_xTick,min_x); end
+      if (max_x-x_at_min_err<3), my_xTick = setxor(my_xTick,max_x); end
+      my_xTick = unique([my_xTick,x_at_min_err]);
+    end
+    predicted_GA = x_at_min_err;
+    set(hsp,'xTick',my_xTick)
+    mesg = ['Fetal GA at Visit# 2 estimated to be ' num2str(predicted_GA) ' days.'];
+    disp(mesg)
   end
-  predicted_GA = x_at_min_err;
-  set(hsp,'xTick',my_xTick)
-  mesg = ['Fetal GA at Visit# 2 estimated to be ' num2str(predicted_GA) ' days.'];
-  disp(mesg)
 % end manifold_GA_2_visits
