@@ -13,7 +13,7 @@ Copyright (c) 2019 Russell Fung & Abbas Ourmazd. All Rights Reserved.
   <li><b>manifold_GA.m</b></li>
   <li><b>manifold_GA_2_visits.m</b></li>
   <li><b>histcounts.m</b> (for GNU Octave users)</li>
-  <li><b>fix_synapse_filename_bug.m</b></li>
+  <li><b>manifold_GA_batch_mode.m</b></li>
   </ol>
 <li>Inside the <b>manifold-ga</b> directory, create a subdirectory named <b>trained_model</b>.</li>
 <li>Inside the <b>trained_model</b> directory, MATLAB&reg; mat-files for each trained model must be placed together in an
@@ -48,6 +48,7 @@ specified.</li>
 <li>It has been noted that Synapse inserts '(*)' into some of the model filenames. This can be fixed by running
   <pre>>> fix_synapse_filename_bug</pre>
   Note that this has to be done each time new model files are downloaded from Synapse.
+  <p>Bug fixed by Synapse. This step is no longer necessary.
 <li>One prenatal visit, with a GUI:
   <pre>>> manifold_GA</pre>
 <li>One prenatal visit, without a GUI:
@@ -78,4 +79,15 @@ specified.</li>
 <li>The histogram bar corresponding to the prediction with the best interval match is highlighted.</li>
 <li>In both the one-visit and the two-visit cases, the predicted GA is returned in the MATLAB&reg; variable
   <b>predicted_GA</b>.</li>
+<li><b>Batch processing</b>. Prepare a csv file with at least five data columns (extra data columns are okay). The first row
+  is taken as column headings and is ignored. In <i>manifold_GA_batch_mode.m</i>, enter the name of the csv file in line# 9
+  (data = csvread ('...');), and in lines# 15-19 enter the column numbers corresponding, respectively, to subject IDs,
+  relative GA in days, AC, FL, and HC (all in cm). Run:
+  <pre>>> manifold_GA_batch_mode</pre>
+  GA is predicted for the latest visit of each subject whether or not the measurements for that visit are used in the
+  analysis. Only measurements from visits within a goldilocks range of GA (default 17-33 weeks as determined by Eq (2) of
+  Papageorghiou et al (2016)) are used in the analysis. If only one goldilocks visit is available, <i>manifold_GA.m</i>
+  is called; otherwise, <i>manifold_GA_2_visits.m</i> is called with the first two goldilocks visits. The predicted GA (for
+  the latest visit of each subject) will be saved in the csv file <i>manifold_predicted_ga.csv</i> where the first column
+  contains the subject IDs, and the second column contains the predicted GAs.
 </ol>
